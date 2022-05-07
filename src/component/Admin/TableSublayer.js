@@ -9,7 +9,11 @@ function TableSublayer() {
   })
   const[q,setq]=useState("")
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/v1/supplier`).then(
+    axios.get(`http://localhost:8080/api/v1/supplier`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }
+    }).then(
       (res)=>
       setSublayer({
         sublayer:res.data
@@ -38,7 +42,7 @@ function TableSublayer() {
       <h1>Data Tables</h1>
       <nav>
         <ol className="breadcrumb">
-        <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+        <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
           <li className="breadcrumb-item">Tables</li>
           <li className="breadcrumb-item ">Sublayer</li>
         </ol>

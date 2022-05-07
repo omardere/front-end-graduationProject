@@ -1,6 +1,125 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React,{useEffect,useState} from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
 function Cart() {
+  const [car,setCard]=useState({
+    car:[],  
+    length:""   
+  })
+  const history = useNavigate();
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/v1/card/getProducts/${localStorage.getItem("username")}`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }
+
+    
+    }).then(
+            (res)=>
+            {
+              setCard({
+                
+                car:res.data,
+                length:res.data.length
+              })
+            }
+            
+          ).catch(e=>
+            {
+              if(e.response.status===401)
+					{
+                       alert("you should sign in")
+                       history("/")
+					   
+					}
+            })
+          
+         
+      }, []);
+    //  console.log(car.car);
+    function dlt(e,id1){
+      e.preventDefault();
+             axios.put(`http://localhost:8080/api/v1/card/deleteProduct/${localStorage.getItem("username")}/${id1}`,null
+            ,{
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}` 
+        }}).then(res=>{
+            if(res.status===200)
+            {
+              setTimeout(function(){
+                window.location.reload(false); 
+               },1000);	
+               alert("product deleted")
+            }
+          })
+          
+      }
+      function place(e){
+        e.preventDefault();
+               axios.put(`http://localhost:8080/api/v1/card/activate/${localStorage.getItem("username")}`,null
+              ,{
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+          }}).then(res=>{
+              if(res.status===200)
+              {
+                setTimeout(function(){
+                  window.location.reload(false); 
+                 },1000);	
+                 alert("place order done")
+              }
+            })
+            
+        }
+        function up(e,ob){
+          e.preventDefault();
+          for (const role of ob) {
+            axios.put(`http://localhost:8080/api/v1/card/updateProduct/${localStorage.getItem("username")}/${role[0]}/?count=${role[1]}`,null
+               ,{
+            headers: {
+               'Authorization': `Bearer ${localStorage.getItem("token")}` 
+           }}).then(res=>{
+                if(res.status===200)
+                {
+                 
+                   alert("update product "+ role[0] +" done")
+                }
+              })
+            console.log(`${role[0]}: ${role[1]}`);          }
+         // console.log(count)
+
+            //      axios.put(`http://localhost:8080/api/v1/card/activate/${localStorage.getItem("username")}`,null
+            //     ,{
+            // headers: {
+            //   'Authorization': `Bearer ${localStorage.getItem("token")}` 
+            // }}).then(res=>{
+            //     if(res.status===200)
+            //     {
+            //       setTimeout(function(){
+            //         window.location.reload(false); 
+            //        },1000);	
+            //        alert("place order done")
+            //     }
+            //   })
+              
+          }
+    console.log(car.car)
+    const [count,setCount]=useState({
+      count:[]    
+    })
+    function handl(e,i){
+      const newdata={...count}
+     // newdata[e.target.id]=e.target.value;
+     newdata[i] = e.target.value;
+      
+      setCount(newdata);
+      console.log(newdata);
+    }
+
+    
+  var total=0;
+  var order = new Map()
   return (
     <div style={{backgroundColor:"white"}}>
       
@@ -52,30 +171,39 @@ function Cart() {
               <th className="product-price">Price</th>
               <th className="product-quantity">Quantity</th>
               <th className="product-total">Total</th>
+              <th className="product-total">Delete</th>
+
             </tr>
           </thead>
           <tbody>
-            <tr className="table-body-row">
-              <td className="product-image"><img src="assets/img/product/prod1.jpeg" alt=""/></td>
-              <td className="product-name">Strawberry</td>
-              <td className="product-price">$85</td>
-              <td className="product-quantity"><input type="number" placeholder="0"/></td>
-              <td className="product-total">1</td>
+            
+            
+       
+          {
+              car.car.map(c=>
+                {
+                  var sr="assets/img/"+ c.photo;
+                  var co=count[c.id];
+                  console.log(count[c.id]);
+                  var p=c.price;
+                  total+=(p*co);
+                  order.set(c.id, c.quantity-count[c.id]);
+
+                  return(
+                    <tr className="table-body-row">
+              <td className="product-image"><img src={sr} alt=""/></td>
+              <td className="product-name">{c.wareHouse.department.name}</td>
+              <td className="product-price">${c.price}</td>
+              <td className="product-quantity"><input onChange={(e)=>handl(e,c.id)} value={count.count[c.id]} min="1" max={c.quantity}    id="count" type="number" placeholder="0"/></td>
+              <td className="product-total">{p*co}</td>
+              <td>
+               <button onClick={(e)=>dlt(e,c.id)} style={{color: "#E34724",cursor:"pointer",display:"inline-block",margin:"0 5px" ,height:"30px"}} class="fa fa-trash" title="Delete" data-toggle="tooltip"></button>
+            </td>
             </tr>
-            <tr className="table-body-row">
-              <td className="product-image"><img src="assets/img/product/prod2.jpeg" alt=""/></td>
-              <td className="product-name">Berry</td>
-              <td className="product-price">$70</td>
-              <td className="product-quantity"><input type="number" placeholder="0"/></td>
-              <td className="product-total">1</td>
-            </tr>
-            <tr className="table-body-row">
-              <td className="product-image"><img src="assets/img/product/prod3.jpeg" alt=""/></td>
-              <td className="product-name">Lemon</td>
-              <td className="product-price">$35</td>
-              <td className="product-quantity"><input type="number" placeholder="0"/></td>
-              <td className="product-total">1</td>
-            </tr>
+                  )
+                })
+            }
+           
           </tbody>
         </table>
       </div>
@@ -91,23 +219,18 @@ function Cart() {
             </tr>
           </thead>
           <tbody>
-            <tr className="total-data">
-              <td><strong>Subtotal: </strong></td>
-              <td>$500</td>
-            </tr>
-            <tr className="total-data">
-              <td><strong>Shipping: </strong></td>
-              <td>$45</td>
-            </tr>
+         
             <tr className="total-data">
               <td><strong>Total: </strong></td>
-              <td>$545</td>
+              <td>${total}</td>
             </tr>
           </tbody>
         </table>
+      
+
         <div className="cart-buttons">
-          <a href="card.html" className="boxed-btn">Update Cart</a>
-          <NavLink to="/CheckOut" className="boxed-btn black">Check Out</NavLink>
+          <a onClick={(e)=>up(e,order.entries())} style={{color:"white"}} className="boxed-btn">Update Cart</a>
+          <a onClick={(e)=>place(e)} style={{color:"white"}}  className="boxed-btn black">Place Order</a>
         </div>
       </div>
     </div>

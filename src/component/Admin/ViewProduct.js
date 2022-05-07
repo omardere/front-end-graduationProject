@@ -1,8 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
-
-function Product() {
+function ViewProduct() {
     const [product,setProduct]=useState({
         product:[],     
       })
@@ -16,7 +15,12 @@ function Product() {
     
         }, []);
   return (
-    <div style={{marginTop:"30px",backgroundColor:"white"}}>
+    <div style={{
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat", 
+        marginLeft:"300px",
+        marginTop: "0px",
+       }}>
          <section className="py-5">
         <div className="container px-4 px-lg-5 mt-5">
             <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -24,7 +28,7 @@ function Product() {
                   product.product.map(
                       p=>{
                         var sr="assets/img/"+ p.photo;
-                        var path="/Product_detail/"+p.id;
+                        var path="/MP/"+p.id;
                         return(
                             <div className="col mb-5">
                             <div className="card h-100">
@@ -68,4 +72,4 @@ function Product() {
   )
 }
 
-export default Product
+export default ViewProduct

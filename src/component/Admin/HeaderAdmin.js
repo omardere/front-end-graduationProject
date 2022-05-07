@@ -1,19 +1,77 @@
-import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
+import React,{useEffect,useState} from 'react'
+import { NavLink,useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import firebase from './firebase';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
+function HeaderAdmin  () {
+  const [not,setNot]=useState([]);
+  const [msg,setMsg]=useState([]);
 
+ const ref=firebase.firestore().collection("notification")
+ const ref1=firebase.firestore().collection("mesg2")
+ const query = ref1.orderBy('createdAt','desc').limit(4);
+ const [messages] = useCollectionData(query, { idField: 'id' });
+
+ console.log(ref)
+ function getNot(){
+   ref.get().then((item)=>{
+    const items=item.docs.map((doc)=>doc.data());
+    setNot(items);
+
+   })
+ }
+ function getMsg(){
+  ref1.get().then((item)=>{
+   const items=item.docs.map((doc)=>doc.data());
+   setMsg(items);
+  })
+}
+  const history = useNavigate();
+  function logout() {
+localStorage.clear()
+setTimeout(function(){
+  window.location.reload(false); 
+ },1000);				
+      history('/hero')
+ }
+ const [adm,setAdm]=useState({
+  img:""
   
+})
+ useEffect(() => {
+  getNot();
+  getMsg();
+  console.log(not);
+  const msg1=firebase.messaging();
+  msg1.requestPermission().then(()=>{
+    return msg1.getToken();
+  }).then((data)=>{
+    console.log("token",data)
+  })
+  axios.get(`http://localhost:8080/api/v1/employee/byUserName/${localStorage.getItem("username")}`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    }
+  }).then(
+    (res)=>
+    {
+    setAdm({
+    img:res.data.image,
+    
+     
+    })
+  }
+  )
+}, []);
+var sr="assets/img/"+ adm.img;
 
-
-class HeaderAdmin extends Component {
- 
-render(){
   return (
     <div>
       <header  id="header" className="header fixed-top d-flex align-items-center">
 
 <div style={{marginLeft:"20px"}} className="d-flex align-items-center justify-content-between">
-  <NavLink to="/DachB" className="logo d-flex align-items-center">
+  <NavLink to="/" className="logo d-flex align-items-center">
     <img src="assets/img/logoADM.png" alt=""/>
       <span className="d-none d-lg-block">NiceAdmin</span>
     </NavLink>
@@ -36,74 +94,36 @@ render(){
 
       <a className="nav-link nav-icon" href="#i" data-bs-toggle="dropdown">
         <i className="bi bi-bell"></i>
-        <span className="badge bg-primary badge-number">4</span>
+        <span className="badge bg-primary badge-number">{not.length}</span>
       </a>
       {/* < />!-- End Notification Icon --> */}
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
         <li className="dropdown-header">
-          You have 4 new notifications
-          <a href="#i"><span className="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+          You have {not.length} new notifications
         </li>
-        <li>
+        {
+          not.map(n=>
+            {
+              return(
+                <div>
+                  <li>
           <hr className="dropdown-divider">
           </hr></li>
 
         <li className="notification-item">
           <i className="bi bi-exclamation-circle text-warning"></i>
           <div>
-            <h4>Lorem Ipsum</h4>
-            <p>Quae dolorem earum veritatis oditseno</p>
-            <p>30 min. ago</p>
+            <h4>{n.user}</h4>
+            <p>{n.content}</p>
+            <p>{n.time}</p>
           </div>
         </li>
-
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-
-        <li className="notification-item">
-          <i className="bi bi-x-circle text-danger"></i>
-          <div>
-            <h4>Atque rerum nesciunt</h4>
-            <p>Quae dolorem earum veritatis oditseno</p>
-            <p>1 hr. ago</p>
-          </div>
-        </li>
-
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-
-        <li className="notification-item">
-          <i className="bi bi-check-circle text-success"></i>
-          <div>
-            <h4>Sit rerum fuga</h4>
-            <p>Quae dolorem earum veritatis oditseno</p>
-            <p>2 hrs. ago</p>
-          </div>
-        </li>
-
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-
-        <li className="notification-item">
-          <i className="bi bi-info-circle text-primary"></i>
-          <div>
-            <h4>Dicta reprehenderit</h4>
-            <p>Quae dolorem earum veritatis oditseno</p>
-            <p>4 hrs. ago</p>
-          </div>
-        </li>
-
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-        <li className="dropdown-footer">
-          <a href="#i">Show all notifications</a>
-        </li>
-
+                </div>
+              )
+            })
+        }
+       
       </ul>
       {/* <!-- End Notification Dropdown Items --> */}
 
@@ -114,63 +134,40 @@ render(){
 
       <a className="nav-link nav-icon" href="#i" data-bs-toggle="dropdown">
         <i className="bi bi-chat-left-text"></i>
-        <span className="badge bg-success badge-number">3</span>
+        <span className="badge bg-success badge-number">{msg.length}</span>
       </a>
       {/* < />!-- End Messages Icon --> */}
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
         <li className="dropdown-header">
-          You have 3 new messages
-          <a href="#i"><span className="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+          You have {msg.length} new messages
         </li>
-        <li>
+        {
+          messages && messages.map(m=>{
+            return(
+              <div>
+                <li>
           <hr className="dropdown-divider">
           </hr></li>
 
         <li className="message-item">
           <a href="#i">
-            <img src="assets/imgADM/messages-1.jpg" alt="" className="rounded-circle"/>
-              <div>
-                <h4>Maria Hudson</h4>
-                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                <p>4 hrs. ago</p>
+          <i className="bi bi-chat-left-dots-fill"></i>       
+                 <div>
+                <h4>{m.name}</h4>
+                <p>{m.subject}</p>
+                <p>{m.msg}</p>
               </div>
             </a>
         </li>
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-
-        <li className="message-item">
-          <a href="#i">
-            <img src="assets/imgADM/messages-2.jpg" alt="" className="rounded-circle"/>
-              <div>
-                <h4>Anna Nelson</h4>
-                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                <p>6 hrs. ago</p>
               </div>
-            </a>
-        </li>
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
-
-        <li className="message-item">
-          <a href="#i">
-            <img src="assets/imgADM/messages-3.jpg" alt="" className="rounded-circle"/>
-              <div>
-                <h4>David Muldon</h4>
-                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                <p>8 hrs. ago</p>
-              </div>
-            </a>
-        </li>
-        <li>
-          <hr className="dropdown-divider">
-          </hr></li>
+            )
+          })
+        }
+        
 
         <li className="dropdown-footer">
-          <a href="#i">Show all messages</a>
+          <NavLink to="/PageC">Show all messages</NavLink>
         </li>
 
       </ul>
@@ -178,19 +175,19 @@ render(){
 
     </li>
     {/* <!-- End Messages Nav --> */}
-
+        
     <li className="nav-item dropdown pe-3">
 
       <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#i" data-bs-toggle="dropdown">
-        <img src="assets/imgADM/profile-img.jpg" alt="Profile" className="rounded-circle"/>
-          <span className="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+        <img src={sr} alt="Profile" className="rounded-circle"/>
+          <span className="d-none d-md-block dropdown-toggle ps-2">{localStorage.getItem("name")}</span>
         </a>
       {/* <!-- End Profile Iamge Icon --> */}
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li className="dropdown-header">
-          <h6>Kevin Anderson</h6>
-          <span>Web Designer</span>
+          <h6>{localStorage.getItem("name")}</h6>
+          <span>{localStorage.getItem("role")}</span>
         </li>
         <li>
           <hr className="dropdown-divider">
@@ -214,10 +211,10 @@ render(){
 
 
         <li>
-          <a className="dropdown-item d-flex align-items-center" href="#i">
+          <button className="dropdown-item d-flex align-items-center" onClick={logout} >
             <i className="bi bi-box-arrow-right"></i>
             <span>Sign Out</span>
-          </a>
+          </button>
         </li>
 
       </ul>
@@ -236,7 +233,7 @@ render(){
     
   )
   
-}}
+}
 
 export default HeaderAdmin
 

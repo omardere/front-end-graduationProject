@@ -1,6 +1,43 @@
-import React from 'react'
-
+import React,{useState} from 'react'
+import firebase from "firebase"
 function Contact() {
+  const [data,setData]=useState({
+    name:"",
+    email:"",
+    subject:"",
+    msg:"",
+  })
+  const db=firebase.firestore();
+  function handle(e){
+    const newdata={...data}
+    newdata[e.target.id]=e.target.value;
+    setData(newdata);
+    console.log(newdata);
+  }
+  const uid=localStorage.getItem("username")
+  const addDoc=(event)=>{
+    event.preventDefault();
+    db.collection("mesg2").add({
+      name: data.name,
+      email: data.email,
+      subject:data.subject,
+      msg:data.msg ,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid,
+  })
+  .then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+      setData({name:"",
+      email:"",
+      subject:"",
+      msg:"",})
+  })
+  .catch((error) => {
+      console.error("Error adding document: ", error);
+  });
+  
+
+  }
   return (
     <div style={{marginTop:"50px",backgroundColor:"white"}}>
           <section id="contact" className="contact">
@@ -44,20 +81,20 @@ function Contact() {
 
           <div className="col-lg-8 mt-5 mt-lg-0">
 
-            <form  method="post"  className="php-email-form">
+            <form onSubmit={addDoc} method="post"  className="php-email-form">
               <div className="row">
                 <div className="col-md-6 form-group">
-                  <input type="text" name="name" className="form-control" id="name" placeholder="Your Name" required/>
+                  <input style={{backgroundColor:"#ffc451"}} onChange={(e)=>handle(e)} value={data.name}  type="text" name="name" className="form-control" id="name" placeholder="Your Name" required/>
                 </div>
                 <div className="col-md-6 form-group mt-3 mt-md-0">
-                  <input type="email" className="form-control" name="email" id="email" placeholder="Your Email" required/>
+                  <input style={{backgroundColor:"#ffc451"}} onChange={(e)=>handle(e)} value={data.email}  type="email" className="form-control" name="email" id="email" placeholder="Your Email" required/>
                 </div>
               </div>
               <div className="form-group mt-3">
-                <input type="text" className="form-control" name="subject" id="subject" placeholder="Subject" required/>
+                <input style={{backgroundColor:"#ffc451"}} type="text" className="form-control" name="subject" onChange={(e)=>handle(e)} value={data.subject}  id="subject" placeholder="Subject" required/>
               </div>
               <div className="form-group mt-3">
-                <textarea className="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                <textarea style={{backgroundColor:"#ffc451"}} onChange={(e)=>handle(e)} value={data.msg} id="msg" className="form-control" name="message" rows="5" placeholder="Message" required></textarea>
               </div>
               <div className="my-3">
                 <div className="loading">Loading</div>

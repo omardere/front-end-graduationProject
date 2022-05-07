@@ -1,10 +1,102 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios';
 
 function UserProfile() {
+  const [adm,setAdm]=useState({
+    em:"",
+    st:"",
+    dep:"",
+    sal:"",
+    img:""
+  })
+  const [data,setData]=useState({
+    fname:"",
+    lname:"",
+    email:"",
+    img:""
+  })
+  function handle(e){
+    const newdata={...data}
+    newdata[e.target.id]=e.target.value;
+    if(e.target.id==="img"){
+      newdata[e.target.id]=e.target.files[0].name;
+     }
+    setData(newdata);
+    localStorage.setItem("image",e.target.files[0].name)
+    console.log(newdata);
+  }
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/v1/employee/byUserName/${localStorage.getItem("username")}`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then(
+      (res)=>
+      {
+        localStorage.setItem("image",res.data.image)
+
+        console.log(res.data.user.email)
+      setAdm({
+      em:res.data.user.email,
+      st:res.data.startingDate,
+      dep:res.data.department.name,
+      sal:res.data.salary,
+      img:res.data.image
+       
+      })
+      setData({
+        img:res.data.image
+      })
+    }
+    )
+  }, []);
+  console.log(adm.dep)
+  function submit(e){
+    e.preventDefault();
+    axios.put(`http://localhost:8080/api/v1/user/update/${localStorage.getItem("username")}/?firstName=${data.fname}&lastName=${data.lname}&email=${data.email}`,null,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }
+    }).then(
+      res=>{
+        if(res.status===200)
+        {
+          setData({
+            fname:"",
+            lname:"",
+            email:"",            
+            });  
+            setTimeout(function(){
+              window.location.reload(false); 
+             },1000);	
+            localStorage.setItem("name",data.fname+" "+data.lname)
+
+        }
+      }
+    )
+    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${localStorage.getItem("username")}/?image=${data.img}`,null,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }
+    }).then(res=>{
+      if(res.status===200)
+      {
+        localStorage.setItem("image",data.img)
+
+      }
+    })
+
+
+  }
+  var sr;
+   sr="assets/img/"+ localStorage.getItem("image");
+ 
+   console.log(sr)
+
   return (
     <div>
-      
+
 <section id="user_profile">
   <main style={{
     marginTop: "0px"}}
@@ -13,7 +105,7 @@ function UserProfile() {
       <h1>Profile</h1>
       <nav>
         <ol className="breadcrumb">
-        <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+        <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
           <li className="breadcrumb-item">Users</li>
           <li className="breadcrumb-item">Profile</li>
         </ol>
@@ -28,15 +120,10 @@ function UserProfile() {
           <div className="card">
             <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="assets/imgADM/profile-img.jpg" alt="Profile" className="rounded-circle"/>
-              <h2>Kevin Anderson</h2>
-              <h3>Web Designer</h3>
-              <div className="social-links mt-2">
-                <a href="#!" className="twitter"><i className="bi bi-twitter"></i></a>
-                <a href="#!" className="facebook"><i className="bi bi-facebook"></i></a>
-                <a href="#!" className="instagram"><i className="bi bi-instagram"></i></a>
-                <a href="#!" className="linkedin"><i className="bi bi-linkedin"></i></a>
-              </div>
+              <img src={sr} alt="Profile" className="rounded-circle"/>
+              <h2>{localStorage.getItem("name")}</h2>
+              <h3>{localStorage.getItem("role")}</h3>
+
             </div>
           </div>
 
@@ -57,154 +144,86 @@ function UserProfile() {
                   <button className="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                 </li>
 
-                
 
-              
+
+
 
               </ul>
               <div className="tab-content pt-2">
 
                 <div className="tab-pane fade show active profile-overview" id="profile-overview">
                   <h5 className="card-title">About</h5>
-                  <p className="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p>
+                  <p className="small fst-italic">this page contain general information about you .</p>
 
                   <h5 className="card-title">Profile Details</h5>
 
                   <div className="row">
                     <div className="col-lg-3 col-md-4 label ">Full Name</div>
-                    <div className="col-lg-9 col-md-8">Kevin Anderson</div>
+                    <div className="col-lg-9 col-md-8">{localStorage.getItem("name")}</div>
+                  </div>
+
+                   <div className="row">
+                    <div className="col-lg-3 col-md-4 label">Department</div>
+                    <div className="col-lg-9 col-md-8">{adm.dep}</div>
+                  </div>
+
+                   <div className="row">
+                    <div className="col-lg-3 col-md-4 label">salary</div>
+                    <div className="col-lg-9 col-md-8">{adm.sal}</div>
                   </div>
 
                   <div className="row">
-                    <div className="col-lg-3 col-md-4 label">Company</div>
-                    <div className="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
-                  </div>
+                    <div className="col-lg-3 col-md-4 label">starting Date</div>
+                    <div className="col-lg-9 col-md-8">{adm.st}</div>
+                  </div>  
 
                   <div className="row">
-                    <div className="col-lg-3 col-md-4 label">Job</div>
-                    <div className="col-lg-9 col-md-8">Web Designer</div>
+                    <div className="col-lg-3 col-md-4 label">userName</div>
+                    <div className="col-lg-9 col-md-8">{localStorage.getItem("username")}</div>
                   </div>
-
-                  <div className="row">
-                    <div className="col-lg-3 col-md-4 label">Country</div>
-                    <div className="col-lg-9 col-md-8">USA</div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-3 col-md-4 label">Address</div>
-                    <div className="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-3 col-md-4 label">Phone</div>
-                    <div className="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
-                  </div>
-
-                  <div className="row">
+                   <div className="row">
                     <div className="col-lg-3 col-md-4 label">Email</div>
-                    <div className="col-lg-9 col-md-8">k.anderson@example.com</div>
-                  </div>
+                    <div className="col-lg-9 col-md-8">{adm.em}</div>
+                  </div> 
 
                 </div>
 
                 <div className="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   {/* <!-- Profile Edit Form --> */}
-                  <form >
+                  <form onSubmit={(e)=>submit(e)} >
                     <div className="row mb-3">
                       <label for="profileImage" className="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div className="col-md-8 col-lg-9">
-                        <img src="assets/imgADM/profile-img.jpg" alt="Profile"/>
+                        <img src={sr} alt="Profile"/>
                         <div className="pt-2">
-                          <a href="#!" className="btn btn-primary btn-sm" title="Upload new profile image"><i className="bi bi-upload"></i></a>
-                          <a href="#!" className="btn btn-danger btn-sm" title="Remove my profile image"><i className="bi bi-trash"></i></a>
+                          <input onChange={(e)=>handle(e)} id="img"  type="file" className="btn btn-primary btn-sm" title="Upload new profile image"/>
                         </div>
                       </div>
                     </div>
 
                     <div  className="row mb-3">
-                      <label for="fullName" className="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <label for="fullName" className="col-md-4 col-lg-3 col-form-label">first Name</label>
                       <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="fullName" type="text" className="form-control" id="fullName" value="Kevin Anderson"/>
+                        <input onChange={(e)=>handle(e)} id="fname" value={data.fname} style={{backgroundColor: "rgb(216, 164, 21)"}} name="firstName" type="text" className="form-control"  />
                       </div>
                     </div>
 
-                    <div className="row mb-3">
-                      <label for="about" className="col-md-4 col-lg-3 col-form-label">About</label>
+                    <div  className="row mb-3">
+                      <label for="fullName" className="col-md-4 col-lg-3 col-form-label">last Name</label>
                       <div className="col-md-8 col-lg-9">
-                        <textarea style={{backgroundColor: "rgb(216, 164, 21)",height:"100px"}}name="about" className="form-control" id="aboutt" >Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="company" className="col-md-4 col-lg-3 col-form-label">Company</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="company" type="text" className="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Job" className="col-md-4 col-lg-3 col-form-label">Job</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="job" type="text" className="form-control" id="Job" value="Web Designer"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Country" className="col-md-4 col-lg-3 col-form-label">Country</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="country" type="text" className="form-control" id="Country" value="USA"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Address" className="col-md-4 col-lg-3 col-form-label">Address</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="address" type="text" className="form-control" id="Address" value="A108 Adam Street, New York, NY 535022"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Phone" className="col-md-4 col-lg-3 col-form-label">Phone</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="phone" type="text" className="form-control" id="Phone" value="(436) 486-3538 x29071"/>
+                        <input onChange={(e)=>handle(e)} id="lname" value={data.lname} style={{backgroundColor: "rgb(216, 164, 21)"}} name="lastName" type="text" className="form-control"  />
                       </div>
                     </div>
 
                     <div className="row mb-3">
                       <label for="Email" className="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="email" type="email" className="form-control" id="Email" value="k.anderson@example.com"/>
+                        <input onChange={(e)=>handle(e)} id="email" value={data.email} style={{backgroundColor: "rgb(216, 164, 21)"}} name="email" type="email" className="form-control" />
                       </div>
                     </div>
 
-                    <div className="row mb-3">
-                      <label for="Twitter" className="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="twitter" type="text" className="form-control" id="Twitter" value="https://twitter.com/#"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Facebook" className="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="facebook" type="text" className="form-control" id="Facebook" value="https://facebook.com/#"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Instagram" className="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="instagram" type="text" className="form-control" id="Instagram" value="https://instagram.com/#"/>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <label for="Linkedin" className="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
-                      <div className="col-md-8 col-lg-9">
-                        <input style={{backgroundColor: "rgb(216, 164, 21)"}} name="linkedin" type="text" className="form-control" id="Linkedin" value="https://linkedin.com/#"/>
-                      </div>
-                    </div>
+                   
 
                     <div className="text-center">
                       <button type="submit" className="btn btn-primary">Save Changes</button>
@@ -214,7 +233,7 @@ function UserProfile() {
 
                 </div>
 
-                
+
               </div>
               {/* <!-- End Bordered Tabs --> */}
 

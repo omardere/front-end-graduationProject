@@ -2,20 +2,23 @@ import React,{useState,useEffect} from 'react'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios' 
 function FormMaterial() {
-  const url='http://localhost:8080/api/v1/employee/addEmployee/1';
   const [data,setData]=useState({
     property:"",
     avalipility:"",
     photo:"",
     count:"",
-    store:""   
+    store:"",
+    price:"" 
   })
   const [warehouse,setWarehouse]=useState({
     warehouse:[],
       
   })
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/v1/wareHouse`).then(
+    axios.get(`http://localhost:8080/api/v1/wareHouse`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }}).then(
       (res)=>
       setWarehouse({
         warehouse:res.data
@@ -41,8 +44,12 @@ function FormMaterial() {
       availability: data.avalipility,
       description: data.property,
       count: data.count,
-      image: data.photo
-   }).then(res=>{
+      image: data.photo,
+      price:data.price
+   },{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    }}).then(res=>{
      if(res.status===200)
    {
     setData({
@@ -50,7 +57,9 @@ function FormMaterial() {
       avalipility:"",
       photo:"",
       count:"",
-      store:""   
+      store:"" ,
+      price:"" 
+  
   
     });
   }
@@ -61,7 +70,10 @@ function FormMaterial() {
   
   else if(e.target.id==="btn3")  
 {
-  axios.delete(`http://localhost:8080/api/v1/department/deleteByName/${data.name}`
+  axios.delete(`http://localhost:8080/api/v1/department/deleteByName/${data.name}`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    }}
   ).then(res=>{
      if(res.status===200)
    {
@@ -69,7 +81,9 @@ function FormMaterial() {
         name:"",
         phone:"",
         email:"",
-        fax:"",    
+        fax:"", 
+        price:"" 
+   
     });
   }
    })
@@ -95,7 +109,7 @@ color:"beige"}} id="main" className="main">
     <h1>Materials</h1>
     <nav>
       <ol className="breadcrumb">
-      <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+      <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
         <li className="breadcrumb-item">Forms</li>
         <li className="breadcrumb-item ">Material</li>
       </ol>
@@ -141,6 +155,12 @@ color:"beige"}} id="main" className="main">
                 </div>
               </div>
               <div className="row mb-3">
+                <label for="inputDate" className="col-sm-3 col-form-label">price</label>
+                <div className="col-sm-9">
+                  <input  onChange={(e)=>handle(e)} value={data.price} id="price"  type="text" className="form-control"/>
+                </div>
+              </div>
+              <div className="row mb-3">
                 <label for="inputDate" className="col-sm-3 col-form-label">wareHouse</label>
                 <div className="col-sm-9">
                   <select onChange={(e)=>handle(e)} value={data.store} id="store" >
@@ -158,7 +178,7 @@ color:"beige"}} id="main" className="main">
 
              
               
-              <div style={{marginTop: "100px"}} className="row mb-3">
+              <div style={{marginTop: "60px"}} className="row mb-3">
                 <div  className="col-sm-10">
                   <button onClick={(e)=>submit(e)} id="btn1" style={{marginRight: "30px", marginLeft: "60px"}} type="submit" className="btn btn-primary">ADD</button>
                 </div>

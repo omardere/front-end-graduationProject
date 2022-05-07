@@ -1,8 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios' 
 function FormEmployee() {
   //const url='http://localhost:8080/api/v1/employee/addEmployee/1';
+  const [warehouse,setWarehouse]=useState({
+    warehouse:[],
+      
+  })
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/v1/department`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      }}).then(
+      (res)=>
+      setWarehouse({
+        warehouse:res.data
+      })
+    )
+}, []);
   const [data,setData]=useState({
     fname:"",
     lname:"",
@@ -11,6 +26,7 @@ function FormEmployee() {
     password:"",
     bod:"",
     startdate:"",
+    photo:""  ,
     salary:"",
     role:"",
     department:""    
@@ -18,6 +34,9 @@ function FormEmployee() {
   function handle(e){
     const newdata={...data}
     newdata[e.target.id]=e.target.value;
+    if(e.target.id==="photo"){
+      newdata[e.target.id]=e.target.files[0].name;
+     }
     setData(newdata);
     console.log(newdata);
   }
@@ -26,19 +45,23 @@ function FormEmployee() {
     console.log(e.target.id);
     if(e.target.id==="btn1")
     {
-   axios.post(`http://localhost:8080/api/v1/employee/addEmployee/${data.department}`,{
-    salary:parseInt(data.salary),
+   axios.post(`http://localhost:8080/api/v1/employee/addEmployee/${data.store}`,{
+    salary:data.salary,
     startingDate:data.startdate,
     role:data.role,
+    image:data.photo,
       user:{ firstName:data.fname,
        lastName:data.lname,
        userName:data.username,
        email:data.email,
        dop:data.bod,
        password:data.password,
-       role:1
       }
-   }).then(res=>{
+      
+   },{
+     headers:{
+    'Authorization': `Bearer ${localStorage.getItem("token")}` 
+  }}).then(res=>{
      if(res.status===200)
    {
     setData({
@@ -54,231 +77,46 @@ function FormEmployee() {
       department:""
       
     });
+    
   }
-   })
+   }).catch(e=>
+    {
+      if(e.response.status===500)
+      {
+        alert("user name or email are alredy found")
+      }
+    })
+  
 
    
   }
   else if(e.target.id==="btn2")
   {
-    var fn=false,ln=false,emal=false,pod=false,pass=false,sd=false,slar=false,rl=false;
     
 
-    if(data.fname!==""){
-      fn=true;
-   
-    }
-     if(data.lname!==""){
-       ln=true;
-      }
-       if(data.bod!==""){
-         pod=true;
-        }
-         if(data.email!==""){
-           emal=true;
-          }
-           if(data.password!==""){
-             pass=true;
-           }
-            if(data.startdate!==""){
-              sd=true;
-              }
-              if(data.role!==""){
-                rl=true;
-            
-                }
-                if(data.salary!==""){
-                  slar=true;
-                 
-                  }
-                  if(fn&&ln&&emal&&pass&&pod)
-                  {
-                    console.log('1')
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                  else if(fn&&ln&&emal&&pass&&!pod)
-                  {
-                    console.log('2')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&password=${data.password}`)  
-                  }
-                 else if(fn&&ln&&emal&&!pass&&pod)
-                  {
-                    console.log('3')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&dop=${data.bod}`)  
-                  }
-                 else if(fn&&ln&&!emal&&pass&&pod)
-                  {
-                    console.log('4')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(fn&&!ln&&emal&&pass&&pod)
-                  {
-                    console.log('5')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(!fn&&ln&&emal&&pass&&pod)
-                  {
-                    console.log('6')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                    &email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                 else if(!fn&&!ln&&emal&&pass&&pod)
-                  {
-                    console.log('7')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                 else if(!fn&&!ln&&!emal&&pass&&pod)
-                  {
-                    console.log('8')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(!fn&&!ln&&!emal&&!pass&&pod)
-                  {
-                    console.log('9')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?dop=${data.bod}`)  
-                  }
-                else  if(fn&&!ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('10')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    `)  
-                  }
-                 else if(fn&&ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('11')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}`)  
-                  }
-                  else if(fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('13')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}`)  
-                  }
-                  else if(fn&&ln&&!emal&&!pass&&pod)
-                  {
-                    console.log('14')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&pod=${data.bod}`)  
-                  }
-                  else if(fn&&ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('15')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&password=${data.password}`)  
-                  }
-                  else if(!fn&&ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('16')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?
-                    lastName=${data.lname}`)  
-                  }
-                  else if(!fn&&!ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('17')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?password=${data.password}`)  
-                  }
-                  else if(!fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('18')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}
-                    `)  
-                  }
-                  else if(fn&&!ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('19')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                   &password=${data.password}`)  
-                  }
-                  else if(fn&&!ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('20')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                   &email=${data.email}`)  
-                  }
-                  else if(!fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('21')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                   &email=${data.email}`)  
-                  }
-                  else if(!fn&&ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('22')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                   &password=${data.password}`)  
-                  }
-                  else if(!fn&&!ln&&emal&&pass&&!pod)
-                  {
-                    console.log('23')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}
-                   &password=${data.password}`)  
-                  }
-                  if(sd&&slar&&rl){
-                    console.log('e1')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?startingDate=${data.startdate}&salary=${data.salary}&role=${data.role}`)
-                  }
-                  if(sd&&!slar&&!rl){
-                    console.log('e2')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?startingDate=${data.startdate}`)
-                  }
-                  if(sd&&slar&&!rl){
-                    console.log('e3')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?startingDate=${data.startdate}&salary=${data.salary}`)
-                  }
-                  if(!sd&&slar&&!rl){
-                    console.log('e4')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?salary=${data.salary}`)
-                  }
-                  if(!sd&&slar&&rl){
-                    console.log('e5')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?salary=${data.salary}&role=${data.role}`)
-                  }
-                  if(!sd&&!slar&&rl){
-                    console.log('e6')
-                    axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?role=${data.role}`)
-                  }
-                
-
-                   
-
-
-                   fn=false;
-                   ln=false;
-                   emal=false;
-                   pod=false;
-                   pass=false;
-                   sd=false;
-                   slar=false;
-                   rl=false;
-
-              
+                  axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}&lastName=${data.lname}&email=${data.email}&password=${data.password}`,null,{
+                        headers: {
+                          'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                        }
+                      }).catch(e=>
+                        {
+                          if(e.response.status===500)
+                          {
+                            alert("employee not found")
+                          }
+                        })
+                      axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${data.username}/?salary=${data.salary}&role=${data.role}`,null,{
+                        headers: {
+                          'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                        }
+                      }).catch(e=>
+                        {
+                          if(e.response.status===500)
+                          {
+                            alert("employee not found")
+                          }
+                        })
+                  
             setData({
               fname:"",
               lname:"",
@@ -295,7 +133,11 @@ function FormEmployee() {
   }
   else if(e.target.id==="btn3")  
 {
-  axios.delete(`http://localhost:8080/api/v1/employee/deleteEmployeeByUserName/${data.username}`
+  axios.delete(`http://localhost:8080/api/v1/employee/deleteEmployeeByUserName/${data.username}`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    }
+  }
   ).then(res=>{
      if(res.status===200)
    {
@@ -309,7 +151,9 @@ function FormEmployee() {
       startdate:"",
       salary:"", 
       role:"",  
-      department:""
+      department:"",
+      store:"None",
+      photo:""
   
     });
   }
@@ -331,7 +175,7 @@ function FormEmployee() {
       <h1>Employee</h1>
       <nav >
         <ol className="breadcrumb">
-        <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+        <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
           <li className="breadcrumb-item">Forms</li>
           <li className="breadcrumb-item ">Employee</li>
         </ol>
@@ -378,12 +222,26 @@ function FormEmployee() {
                     <input onChange={(e)=>handle(e)} id="password" value={data.password} required type="password" className="form-control"/>
                   </div>
                 </div>
-                <div  className="row mb-3">
-                  <label for="inputText" className="col-sm-3 col-form-label">department</label>
-                  <div  className="col-sm-9">
-                    <input onChange={(e)=>handle(e)} value={data.department} id="department" required  type="text" className="form-control"/>
-                  </div>
+                 
+              <div className="row mb-3">
+                <label for="inputDate" className="col-sm-3 col-form-label"> personal photo</label>
+                <div className="col-sm-9">
+                  <input onChange={(e)=>handle(e)}  id="photo" required type="file" className="subtask-hide col-xs-10"/>
                 </div>
+              </div>
+                <div className="row mb-3">
+                <label for="inputDate" className="col-sm-3 col-form-label">department</label>
+                <div className="col-sm-9">
+                  <select onChange={(e)=>handle(e)} value={data.store} id="store" >
+                  <option value="">None</option>
+                  { warehouse.warehouse.map(ware => (
+  <option key={ware.name} value={ware.name}>
+    {ware.name}
+  </option>
+))} 
+                  </select>
+                </div>
+              </div>
                 
                 
                 <div className="row mb-3">

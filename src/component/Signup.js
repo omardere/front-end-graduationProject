@@ -40,6 +40,12 @@ function submit(e){
  }).then(res=>{
    if(res.status===200)
  {
+  axios.post(`http://localhost:8080/api/v1/card/addCard/${data.username}`,{
+    
+
+  }   
+      
+   )
   setData({
     fname:"",
     lname:"",
@@ -55,7 +61,13 @@ function submit(e){
     
   });
 }
- })
+ }).catch(e=>
+  {
+    if(e.response.status===500)
+    {
+      alert("user name or email are alredy found")
+    }
+  })
 }
  
 
@@ -119,7 +131,7 @@ function submit(e){
 	            </div>
 	     </form>
               <div style={{marginop: "10px",textAlign:"center"}}>
-              <NavLink  to="/login" class="w-100 text-center">&mdash; Or Sign In &mdash;</NavLink>
+              <NavLink  to="/" class="w-100 text-center">&mdash; Or Sign In &mdash;</NavLink>
             </div>
 		      </div>
 				</div>

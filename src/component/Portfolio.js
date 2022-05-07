@@ -1,6 +1,19 @@
-import React from 'react'
-
+import React,{useState,useEffect} from 'react'
+import axios from 'axios';
 function Portfolio() {
+  const [product,setProduct]=useState({
+    product:[],     
+  })
+  useEffect(() => {
+  axios.get(`http://localhost:8080/api/v1/product`).then(
+          (res)=>
+          setProduct({
+            product:res.data
+          })
+        )
+
+    }, []);
+    console.log(product.product)
   return (
     <div style={{marginTop:"50px",backgroundColor:"white"}}>
       <section id="portfolio" className="portfolio">
@@ -12,46 +25,25 @@ function Portfolio() {
         </div>
 
         <div className="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
-
-          <div className="col-lg-4 col-md-6 portfolio-item filter-app">
+         {
+            product.product.map(m=>{
+              var sr="assets/img/"+ m.photo;
+              return(
+               <div className="col-lg-4 col-md-6 portfolio-item filter-app">
             <div className="portfolio-wrap">
-              <img src="assets/img/product/prod1.jpeg" className="img-fluid" alt=""/>
+              <img width="400px"  src={sr} height="200px" className="img-fluid" alt=""/>
             </div>
           </div>
-
-          <div className="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div className="portfolio-wrap">
-              <img src="assets/img/product/prod2.jpeg" className="img-fluid" alt=""/>
-             
-            </div>
-          </div>
-
-          <div className="col-lg-4 col-md-6 portfolio-item filter-app">
-            <div className="portfolio-wrap">
-              <img src="assets/img/product/prod3.jpeg" className="img-fluid" alt=""/>
-              
-            </div>
-          </div>
-
-          <div className="col-lg-4 col-md-6 portfolio-item filter-card">
-            <div className="portfolio-wrap">
-              <img src="assets/img/product/prod4.jpeg" className="img-fluid" alt=""/>
-             
-            </div>
-          </div>
-
-          <div className="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div className="portfolio-wrap">
-              <img src="assets/img/product/prod5.jpeg" className="img-fluid" alt=""/>
-             
-              </div>
-            </div>
-          </div>
-
+              )
+            })
+         }
+      
           
 
 
         </div>
+        </div>
+
 
     </section>
     </div>

@@ -47,7 +47,10 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
       password: data.password
   },
   companyName:data.name
-   }).then(res=>{
+   },{
+    headers:{
+   'Authorization': `Bearer ${localStorage.getItem("token")}` 
+ }}).then(res=>{
     console.log(res.status)
      if(res.status===200)
    {
@@ -68,351 +71,41 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
       
     });
   }
-   })
+   }).catch(e=>
+    {
+      if(e.response.status===500)
+      {
+        alert("user name or email are alredy found")
+      }
+    })
 
    
   }
   else if(e.target.id==="btn2")
-  {
-    var fn=false,ln=false,emal=false,pod=false,pass=false,n=false,ad=false,t=false,f=false,m=false,ph=false,p=false;
-    
-
-    if(data.fname!==""){
-      fn=true;
-   
-    }
-     if(data.lname!==""){
-       ln=true;
-      }
-       if(data.bod!==""){
-         pod=true;
-        }
-         if(data.email!==""){
-           emal=true;
-          }
-           if(data.password!==""){
-             pass=true;
-           }
-            if(data.method!==""){
-              m=true;
-              }
-              if(data.phone!==""){
-                ph=true;
-            
-                }
-                if(data.postal!==""){
-                  p=true;
-                 
-                  }
-                  if(data.name!==""){
-                    n=true;
-                   
-                    }
-                    if(data.address!==""){
-                      ad=true;                   
-                      }
-                      if(data.type!==""){
-                       t=true;
-                       
-                        }
-                        if(data.fax!==""){
-                          f=true;
-                         
-                          }
-                  if(m&&t&&f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('1')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&!t&&!f&&!ph&&!ad&&!n&&!p)
-                  {       
-                    console.log('2')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?paymentMethode=${data.method}`)  
-                  }
-                 else if(!m&&t&&!f&&!ph&&!ad&&!n&&!p)
-                 {       
-                   console.log('3')
-                   axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?
-                   discountType=${data.type}`)  
-                 }
-                 else if(!m&&!t&&f&&!ph&&!ad&&!n&&!p)
-                 {       
-                   console.log('4')
-                   axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?fax=${data.fax}`)  
-                 }
-                else  if(!m&&!t&&!f&&ph&&!ad&&!n&&!p)
-                {       
-                  console.log('5')
-                  axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?phoneNumber=${data.phone}`)  
-                }
-                else  if(!m&&!t&&!f&&!ph&&ad&&!n&&!p)
-                {       
-                  console.log('6')
-                  axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                  `)  
-                }
-                 else if(!m&&!t&&!f&&!ph&&!ad&&n&&!p)
-                 {       
-                   console.log('7')
-                   axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?companyName=${data.name}`)  
-                 }
-                 else if(!m&&!t&&!f&&!ph&&!ad&&!n&&p)
-                 {       
-                   console.log('8')
-                   axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?discountType=${data.type}`)  
-                 }
-                else  if(m&&t&&!f&&!ph&&!ad&&!n&&!p)
-                {       
-                  console.log('9')
-                  axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?
-                  &paymentMethode=${data.method}&discountType=${data.type}`)  
-                }
-                else  if(m&&t&&!f&&!ph&&!ad&&n&&!p)
-                {       
-                  console.log('10')
-                  axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?
-                  &paymentMethode=${data.method}&companyName=${data.name}&discountType=${data.type}`)  
-                }
-                 else if(!m&&!t&&f&&ph&&ad&&!n&&p)
-                 {       
-                   console.log('11')
-                   axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                   &postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}`)  
-                 }
-                  else if(!m&&t&&!f&&!ph&&ad&&n&&!p)
-                  {       
-                    console.log('12')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&!t&&f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('13')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}`)  
-                  }
-                  else if(!m&&t&&f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('14')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&t&&!f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('15')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&t&&f&&!ph&&ad&&n&&p)
-                  {       
-                    console.log('16')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&t&&f&&ph&&!ad&&n&&p)
-                  {       
-                    console.log('17')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&t&&f&&ph&&ad&&!n&&p)
-                  {       
-                    console.log('18')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&discountType=${data.type}`)  
-                  }
-                  else if(m&&t&&f&&ph&&ad&&n&&!p)
-                  {       
-                    console.log('19')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`)  
-                  }
-                  else if(m&&!t&&f&&ph&&ad&&!n&&p)
-                  {       
-                    console.log('20')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}`)  
-                  }
-                  else if(!m&&!t&&f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('21')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                    &postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}`)  
-                  }
-                  else if(!m&&!t&&!f&&ph&&ad&&n&&p)
-                  {       
-                    console.log('22')
-                    axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}
-                   &postalCode=${data.postal}&phoneNumber=${data.phone}&companyName=${data.name}`)  
-                  }
-                  if(fn&&ln&&emal&&pass&&pod)
-                  {
-                    console.log('1')
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                  else if(fn&&ln&&emal&&pass&&!pod)
-                  {
-                    console.log('2')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&password=${data.password}`)  
-                  }
-                 else if(fn&&ln&&emal&&!pass&&pod)
-                  {
-                    console.log('3')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}&dop=${data.bod}`)  
-                  }
-                 else if(fn&&ln&&!emal&&pass&&pod)
-                  {
-                    console.log('4')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(fn&&!ln&&emal&&pass&&pod)
-                  {
-                    console.log('5')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(!fn&&ln&&emal&&pass&&pod)
-                  {
-                    console.log('6')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                    &email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                 else if(!fn&&!ln&&emal&&pass&&pod)
-                  {
-                    console.log('7')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}&dop=${data.bod}&password=${data.password}`)  
-                  }
-                 else if(!fn&&!ln&&!emal&&pass&&pod)
-                  {
-                    console.log('8')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?dop=${data.bod}&password=${data.password}`)  
-                  }
-                else  if(!fn&&!ln&&!emal&&!pass&&pod)
-                  {
-                    console.log('9')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?dop=${data.bod}`)  
-                  }
-                else  if(fn&&!ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('10')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    `)  
-                  }
-                 else if(fn&&ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('11')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}`)  
-                  }
-                  else if(fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('13')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&email=${data.email}`)  
-                  }
-                  else if(fn&&ln&&!emal&&!pass&&pod)
-                  {
-                    console.log('14')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&pod=${data.bod}`)  
-                  }
-                  else if(fn&&ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('15')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                    &lastName=${data.lname}&password=${data.password}`)  
-                  }
-                  else if(!fn&&ln&&!emal&&!pass&&!pod)
-                  {
-                    console.log('16')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?
-                    lastName=${data.lname}`)  
-                  }
-                  else if(!fn&&!ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('17')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?password=${data.password}`)  
-                  }
-                  else if(!fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('18')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}
-                    `)  
-                  }
-                  else if(fn&&!ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('19')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                   &password=${data.password}`)  
-                  }
-                  else if(fn&&!ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('20')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}
-                   &email=${data.email}`)  
-                  }
-                  else if(!fn&&ln&&emal&&!pass&&!pod)
-                  {
-                    console.log('21')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                   &email=${data.email}`)  
-                  }
-                  else if(!fn&&ln&&!emal&&pass&&!pod)
-                  {
-                    console.log('22')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?lastName=${data.lname}
-                   &password=${data.password}`)  
-                  }
-                  else if(!fn&&!ln&&emal&&pass&&!pod)
-                  {
-                    console.log('23')
-
-                    axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?email=${data.email}
-                   &password=${data.password}`)  
-                  }
-                
-
-                   
-
-
-                   fn=false;
-                   ln=false;
-                   emal=false;
-                   pod=false;
-                   pass=false;
-                   m=false;
-                   t=false;
-                   f=false;
-                   ph=false;
-                   ad=false;
-                   n=false;
-                   p=false;
-                   
+  {  
+                 axios.put(`http://localhost:8080/api/v1/user/update/${data.username}/?firstName=${data.fname}&lastName=${data.lname}&email=${data.email}&password=${data.password}`,null,{
+                            headers: {
+                              'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                            }
+                          }).catch(e=>
+                            {
+                              if(e.response.status===500)
+                              {
+                                alert("sublyaer not found")
+                              }
+                            })
+                          axios.put(`http://localhost:8080/api/v1/supplier/updateByUserName/${data.username}?address=${data.address}&paymentMethode=${data.method}&postalCode=${data.postal}&fax=${data.fax}&phoneNumber=${data.phone}&companyName=${data.name}&discountType=${data.type}`,null,{
+                            headers: {
+                              'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                            }
+                          }).catch(e=>
+                            {
+                              if(e.response.status===500)
+                              {
+                                alert("sublayer not found")
+                              }
+                            })
+                  
 
               
             setData({
@@ -434,7 +127,11 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
   }
   else if(e.target.id==="btn3")  
 {
-  axios.delete(`http://localhost:8080/api/v1/supplier/deleteByUserName/${data.username}`
+  axios.delete(`http://localhost:8080/api/v1/supplier/deleteByUserName/${data.username}`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    }
+  }
   ).then(res=>{
      if(res.status===200)
    {
@@ -478,7 +175,7 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
       <h1>Sublayers</h1>
       <nav>
         <ol className="breadcrumb">
-        <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+        <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
           <li className="breadcrumb-item">Forms</li>
           <li className="breadcrumb-item ">Sublayer</li>
         </ol>
@@ -544,12 +241,6 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
                       <input  type="text" onChange={(e)=>handle(e)} value={data.address} id="address" className="form-control"/>
                     </div>
                   </div>
-                  <div className="row mb-3">
-                    <label for="inputEmail" className="col-sm-3 col-form-label">Current Order</label>
-                    <div className="col-sm-9">
-                      <input type="text" className="form-control"/>
-                    </div>
-                  </div>
                   
                   <div className="row mb-3">
                     <label for="inputPassword" className="col-sm-3 col-form-label">fax</label>
@@ -584,12 +275,7 @@ const url='http://localhost:8080/api/v1/supplier/addSupplier';
                       <input  onChange={(e)=>handle(e)} value={data.phone} id="phone" type="text" className="form-control"/>
                     </div>
                   </div>
-                  <div className="row mb-3">
-                    <label for="inputDate" className="col-sm-3 col-form-label">Material Provider</label>
-                    <div className="col-sm-9">
-                      <input type="text" className="form-control"/>
-                    </div>
-                  </div>
+                 
                   
                   <div className="row mb-3">
                     <div  className="col-sm-10">

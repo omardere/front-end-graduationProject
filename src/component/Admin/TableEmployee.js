@@ -8,7 +8,11 @@ function TableEmployee () {
   })
   const[q,setq]=useState("")
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/v1/employee`).then(
+    axios.get(`http://localhost:8080/api/v1/employee`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+      }
+    }).then(
       (res)=>
       setEmployee({
         employee:res.data
@@ -44,7 +48,7 @@ function TableEmployee () {
       <h1 >Employee</h1>
       <nav>
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><NavLink to="/DachB">Home</NavLink></li>
+          <li className="breadcrumb-item"><NavLink to="/">Home</NavLink></li>
           <li className="breadcrumb-item">Tables</li>
           <li className="breadcrumb-item ">Employee</li>
         </ol>

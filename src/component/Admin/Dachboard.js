@@ -1,19 +1,55 @@
 
-import React, { Component } from 'react'
+import React,{useState,useEffect} from 'react'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios';
 
 
-
-class Dachboard extends Component {
+function Dachboard () {
   
-      render()
-      {
+  const [order,setOrder]=useState({
+    order:[],     
+  })
+  const [fin,setFin]=useState({
+    fin:[],     
+  })
+  useEffect(() => {
+  axios.get(`http://localhost:8080/api/v1/order/OrdersInProgress`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`, 
+    }
+  }).then(
+          (res)=>{
+            console.log(res.data)
+          setOrder({
+            order:res.data
+          })
+        }
+        )
+
+   
+    axios.get(`http://localhost:8080/api/v1/financial/getFinancial`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    }
+  }).then(
+          (res)=>
+          
+          setFin({
+
+            fin:res.data
+          })
+        )
+        
+    }, []);
+  //  var JSONObject = JSON.parse(order.order);
+    //console.log(JSONObject);   
+  console.log(typeof(order.order))
   return (
     <div>
-      
   <main   id="main" className="main">
    <section style={{  marginTop: "-50px  "}} id="dashboard_box">
     <div className="pagetitle">
+    
       <h1>Dashboard</h1>
       <nav>
         <ol className="breadcrumb">
@@ -28,28 +64,17 @@ class Dachboard extends Component {
       <div className="row">
 
         {/* <!-- Left side columns --> */}
-        <div className="col-lg-8">
+        <div className="col-lg-10">
           <div className="row">
 
             {/* <!-- Sales Card --> */}
             <div className="col-xxl-4 col-md-6">
               <div className="card info-card sales-card">
 
-                <div className="filter">
-                  <a className="icon" href="#i" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a className="dropdown-item" href="#i">Today</a></li>
-                    <li><a className="dropdown-item" href="#i">This Month</a></li>
-                    <li><a className="dropdown-item" href="#i">This Year</a></li>
-                  </ul>
-                </div>
+            
 
                 <div className="card-body">
-                  <h5 className="card-title">Sales <span>| Today</span></h5>
+                  <h5 className="card-title">Sales <span>| Month</span></h5>
 
                   <div className="d-flex align-items-center">
                     <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -71,18 +96,7 @@ class Dachboard extends Component {
             <div className="col-xxl-4 col-md-6">
               <div className="card info-card revenue-card">
 
-                <div className="filter">
-                  <a className="icon" href="#i" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a className="dropdown-item" href="#i">Today</a></li>
-                    <li><a className="dropdown-item" href="#i">This Month</a></li>
-                    <li><a className="dropdown-item" href="#i">This Year</a></li>
-                  </ul>
-                </div>
+               
 
                 <div className="card-body">
                   <h5 className="card-title">Revenue <span>| This Month</span></h5>
@@ -92,8 +106,8 @@ class Dachboard extends Component {
                       <i className="bi bi-currency-dollar"></i>
                     </div>
                     <div className="ps-3">
-                      <h6>$3,264</h6>
-                      <span className="text-success small pt-1 fw-bold">8%</span> <span className="text-muted small pt-2 ps-1">increase</span>
+                      <h6>${fin.fin.profitsOfTheMonth}</h6>
+                      <span className="text-success small pt-1 fw-bold">{fin.fin.profitsToLastMonth}%</span> 
 
                     </div>
                   </div>
@@ -107,30 +121,16 @@ class Dachboard extends Component {
             <div className="col-xxl-4 col-xl-12">
 
               <div className="card info-card customers-card">
-
-                <div className="filter">
-                  <a className="icon" href="#i" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a className="dropdown-item" href="#!">Today</a></li>
-                    <li><a className="dropdown-item" href="#!">This Month</a></li>
-                    <li><a className="dropdown-item" href="#!">This Year</a></li>
-                  </ul>
-                </div>
-
                 <div className="card-body">
-                  <h5 className="card-title">Customers <span>| This Year</span></h5>
+                  <h5 className="card-title">Customers <span>| This month</span></h5>
 
                   <div className="d-flex align-items-center">
                     <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i className="bi bi-people"></i>
                     </div>
                     <div className="ps-3">
-                      <h6>1244</h6>
-                      <span className="text-danger small pt-1 fw-bold">12%</span> <span className="text-muted small pt-2 ps-1">decrease</span>
+                      <h6>{fin.fin.customerCount}</h6>
+                      <span className="text-danger small pt-1 fw-bold">{fin.fin.customerToLastMonth}%</span> 
 
                     </div>
                   </div>
@@ -146,68 +146,37 @@ class Dachboard extends Component {
             <div className="col-12">
               <div className="card recent-sales overflow-auto">
 
-                <div className="filter">
-                  <a className="icon" href="#!" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a className="dropdown-item" href="#!">Today</a></li>
-                    <li><a className="dropdown-item" href="#!">This Month</a></li>
-                    <li><a className="dropdown-item" href="#!">This Year</a></li>
-                  </ul>
-                </div>
+              
 
                 <div className="card-body">
-                  <h5 className="card-title">Recent Sales <span>| Today</span></h5>
+                  <h5 className="card-title">Recent Sales <span>| month</span></h5>
 
                   <table className="table table-borderless datatable">
                     <thead>
                       <tr>
-                        <th scope="col">#!</th>
+                        <th scope="col">id</th>
                         <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
+                        <th scope="col">Order Date</th>
+                        <th scope="col">Order Done</th>
                         <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row"><a href="#!">#!2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#!" className="text-primary">At praesentium minu</a></td>
-                        <td>$64</td>
+                     {
+                        order.order.map(m=>
+                          {
+                            return(
+                              <tr>
+                        <th scope="row"><a href="#">{m.id}</a></th>
+                        <td>{m.customer.user.firstName} {m.customer.user.lastName}</td>
+                        <td><a href="#!" className="text-primary">{m.orderDate}</a></td>
+                        <td>{m.orderDone}</td>
                         <td><span className="badge bg-success">Approved</span></td>
                       </tr>
-                      <tr>
-                        <th scope="row"><a href="#!">#!2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#!" className="text-primary">Blanditiis dolor omnis similique</a></td>
-                        <td>$47</td>
-                        <td><span className="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#!">#!2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#!" className="text-primary">At recusandae consectetur</a></td>
-                        <td>$147</td>
-                        <td><span className="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#!">#!2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#!" className="text-primar">Ut voluptatem id earum et</a></td>
-                        <td>$67</td>
-                        <td><span className="badge bg-danger">Rejected</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#!">#!2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#!" className="text-primary">Sunt similique distinctio</a></td>
-                        <td>$165</td>
-                        <td><span className="badge bg-success">Approved</span></td>
-                      </tr>
+                            )
+                          })
+                      } 
+                     
                     </tbody>
                   </table>
 
@@ -217,22 +186,11 @@ class Dachboard extends Component {
             </div>
             {/* <!-- End Recent Sales --> */}
 
-            {/* <!-- Top Selling --> */}
+            {/* <!-- Top Selling -->
             <div className="col-12">
               <div className="card top-selling overflow-auto">
 
-                <div className="filter">
-                  <a className="icon" href="#!" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a className="dropdown-item" href="#!">Today</a></li>
-                    <li><a className="dropdown-item" href="#!">This Month</a></li>
-                    <li><a className="dropdown-item" href="#!">This Year</a></li>
-                  </ul>
-                </div>
+             
 
                 <div className="card-body pb-0">
                   <h5 className="card-title">Top Selling <span>| Today</span></h5>
@@ -249,7 +207,7 @@ class Dachboard extends Component {
                     </thead>
                     <tbody>
                       <tr>
-                        <th scope="row"><a href="#!"><img src="assets/imgADM/product-1.jpg" alt=""/></a></th>
+                        <th scope="row"><a href="#!"><img src="cproduct-1.jpg" alt=""/></a></th>
                         <td><a href="#!" className="text-primary fw-bold">Ut inventore ipsa voluptas nulla</a></td>
                         <td>$64</td>
                         <td className="fw-bold">124</td>
@@ -289,7 +247,7 @@ class Dachboard extends Component {
                 </div>
 
               </div>
-            </div>
+            </div> */}
             {/* <!-- End Top Selling --> */}
 
           </div>
@@ -297,10 +255,10 @@ class Dachboard extends Component {
         {/* <!-- End Left side columns --> */}
 
         {/* <!-- Right side columns --> */}
-        <div className="col-lg-4">
+        {/* <div className="col-lg-4"> */}
 
           {/* <!-- Recent Activity --> */}
-          <div className="card">
+          {/* <div className="card">
             <div className="filter">
               <a className="icon" href="#!" data-bs-toggle="dropdown"><i className="bi bi-three-dots"></i></a>
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -325,10 +283,10 @@ class Dachboard extends Component {
                   <div className="activity-content">
                     Quia quae rerum <a href="#!" className="fw-bold text-dark">explicabo officiis</a> beatae
                   </div>
-                </div>
+                </div> */}
                 {/* <!-- End activity item--> */}
 
-                <div className="activity-item d-flex">
+                {/* <div className="activity-item d-flex">
                   <div className="activite-label">56 min</div>
                   <i className='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                   <div className="activity-content">
@@ -337,53 +295,53 @@ class Dachboard extends Component {
                 </div>
                 {/* <!-- End activity item--> */}
 
-                <div className="activity-item d-flex">
+                {/* <div className="activity-item d-flex">
                   <div className="activite-label">2 hrs</div>
                   <i className='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                   <div className="activity-content">
                     Voluptates corrupti molestias voluptatem
                   </div>
-                </div>
+                </div> */}
                 {/* <!-- End activity item--> */}
 
-                <div className="activity-item d-flex">
+                {/* <div className="activity-item d-flex">
                   <div className="activite-label">1 day</div>
                   <i className='bi bi-circle-fill activity-badge text-info align-self-start'></i>
                   <div className="activity-content">
                     Tempore autem saepe <a href="#!" className="fw-bold text-dark">occaecati voluptatem</a> tempore
                   </div>
-                </div>
+                </div> */}
                 {/* <!-- End activity item--> */}
 
-                <div className="activity-item d-flex">
+                {/* <div className="activity-item d-flex">
                   <div className="activite-label">2 days</div>
                   <i className='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                   <div className="activity-content">
                     Est sit eum reiciendis exercitationem
                   </div>
-                </div>
+                </div> */}
                 {/* <!-- End activity item--> */}
 
-                <div className="activity-item d-flex">
+                {/* <div className="activity-item d-flex">
                   <div className="activite-label">4 weeks</div>
                   <i className='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
                   <div className="activity-content">
                     Dicta dolorem harum nulla eius. Ut quidem quidem sit quas
                   </div>
-                </div>
+                </div> */}
                 {/* <!-- End activity item--> */}
 
-              </div>
+              {/* </div>
 
             </div>
-          </div>
+          </div> */}
           {/* <!-- End Recent Activity --> */}
 
-          
+           
         
          
 
-        </div>
+        {/* </div> */}
         {/* <!-- End Right side columns --> */}
 
       </div>
@@ -401,6 +359,6 @@ class Dachboard extends Component {
     </div>
   )
 }
-}
+
 
 export default Dachboard

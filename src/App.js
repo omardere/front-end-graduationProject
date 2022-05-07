@@ -30,32 +30,61 @@ import UserProfile from "./component/Admin/UserProfile";
 import FormSublayer from "./component/Admin/FormSublayer";
 import FormCustomer from "./component/Admin/FormCustomer";
 import FormDepartment from "./component/Admin/FromDepartment";
-class App extends Component {
-  render(){ 
-  return (
-    <div>
-      {/* <BrowserRouter> 
-          <Myheader />  
-         <Routes>
-          <Route path="/Product" element={<Product />} />
-          <Route path="/Cart" element={<Cart />} />
-          <Route path="/Product_detail" element={<ProductDetail />} />
-          <Route path="/CheckOut" element={<CheckOut />} />
-          <Route path="/hero" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>        
-      </BrowserRouter> */}
+import NextProduct from "./component/Admin/NextProduct";
+import SidebarEmp from "./component/Admin/SidebarEmp";
+import ViewProduct from "./component/Admin/ViewProduct";
+import MaterialProduct from "./component/Admin/MaterialProduct";
+import NextNextProduct from "./component/Admin/NextNextProduct";
+import LineChart from "./component/Admin/LineChart";
 
-     
+function App ()  {
+
+     if(localStorage.getItem("role")==="Admin"){ 
+  return (
+    <div>   
       <BrowserRouter>
       <HeaderAdmin/>
       <Sidebar/>
+        <Routes>
+          <Route path="/FE" element={<FormEmployee/>} />
+          <Route path="/chart" element={<LineChart/>} />
+          <Route path="/FM" element={<FormMaterial />} />
+          <Route path="/FD" element={<FormDepartment />} />
+          <Route path="/FP" element={<FormProduct />} />
+          <Route path="/FS" element={<FormStore />} />
+          <Route path="/PageC" element={<PageContact />} />
+          <Route path="/TE" element={<TableEmployee />} />
+          <Route path="/TM" element={<TableMaterial />} />
+          <Route path="/TP" element={<TableProduct />} />
+          <Route path="/TStore" element={<TableStore />} />
+          <Route path="/TSublayer" element={<TableSublayer />} />
+          <Route path="/UP" element={<UserProfile />} />
+          <Route exact  path="/" element={<Dachboard/>} />
+          <Route path="/FC" element={<FormCustomer/>} />
+          <Route path="/FSub" element={<FormSublayer/>} />
+          <Route path="/NP" element={<NextProduct/>} />
+          <Route path="/NNP" element={<NextNextProduct/>} />
+          <Route path="/VP" element={<ViewProduct/>} />
+          <Route path="/MP/:handle" element={<MaterialProduct/>} />
+
+
+        </Routes>
+      
+      </BrowserRouter> 
+       
+      
+
+
+</div>
+  
+  );}
+  else if(localStorage.getItem("role")==="Employee"||localStorage.getItem("role")==="Head")
+{
+  return(
+<div>   
+      <BrowserRouter>
+      <HeaderAdmin/>
+      <SidebarEmp/>
         <Routes>
           <Route path="/FE" element={<FormEmployee/>} />
           <Route path="/FM" element={<FormMaterial />} />
@@ -69,20 +98,46 @@ class App extends Component {
           <Route path="/TStore" element={<TableStore />} />
           <Route path="/TSublayer" element={<TableSublayer />} />
           <Route path="/UP" element={<UserProfile />} />
-          <Route path="/DachB" element={<Dachboard/>} />
+          <Route exact  path="/" element={<ViewProduct/>} />
           <Route path="/FC" element={<FormCustomer/>} />
           <Route path="/FSub" element={<FormSublayer/>} />
+          <Route path="/NP" element={<NextProduct/>} />
+          <Route path="/MP/:handle" element={<MaterialProduct/>} />
         </Routes>
       
       </BrowserRouter> 
-      
+       
       
 
 
 </div>
-  );
+  )}
+else    {
+      return (
+        <div>
+          
+          <BrowserRouter> 
+              <Myheader />  
+             <Routes>
+              <Route path="/Product" element={<Product />} />
+              <Route path="/Cart" element={<Cart />} />
+              <Route path="/Product_detail/:handle" element={<ProductDetail />} />
+              <Route path="/CheckOut" element={<CheckOut />} />
+              <Route   path="/hero" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route exact path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>        
+          </BrowserRouter>
+          </div>
+      )
+    }
+
   
-}
 }
 
 

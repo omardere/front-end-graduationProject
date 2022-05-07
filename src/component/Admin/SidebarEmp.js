@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
-import { FaWpforms,FaTable,FaChartArea } from 'react-icons/fa';
+import { FaWpforms,FaTable } from 'react-icons/fa';
 import { BiGridAlt } from "react-icons/bi";
 import { BsFillPersonFill,BsMessenger } from "react-icons/bs";
 
@@ -20,7 +20,7 @@ function Sidebar() {
             }}
             items={[
               {
-                title: <NavLink style={{color:"black"}} to="/">dashboard</NavLink>,
+                title: <NavLink style={{color:"black"}} to="/">Products</NavLink>,
                 itemId: '/dashboard',
                 
                 // you can use your own custom Icon component as well
@@ -109,16 +109,6 @@ function Sidebar() {
                 // icon is optional
 
                 elemBefore: () => <BsMessenger name="contact" />,
-
-              },
-              {
-                title: <NavLink style={{color:"black"}} to="/chart">Chart</NavLink>,
-                itemId: '/chart',
-                
-                // you can use your own custom Icon component as well
-                // icon is optional
-
-                elemBefore: () => <FaChartArea name="chart" />,
 
               },
             ]}
