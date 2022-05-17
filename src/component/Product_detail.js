@@ -132,9 +132,8 @@ function Product_detail() {
                 <div className="portfolio-info">
                   <h3>Product information</h3>
                   <ul>
-                    <li><strong>description:</strong>{product.product.description}</li>
                     <li><strong>estimated time</strong>{product.product.estimatedTime}</li>
-                    <li><strong>Price</strong>{product.product.price}$</li>
+                    <li><strong>Price</strong>{parseInt(product.product.price,10)}$</li>
                     <li><strong>Dimension:</strong>{`${product.product.height}* ${product.product.width}`}</li>
                     <li><strong>count:</strong><input  min="1" max={product.product.quantity} onChange={(e)=>handl(e)} value={count.count} id="count" type="number"/></li>
         

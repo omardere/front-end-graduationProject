@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import {Navigation} from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
-import { FaWpforms,FaTable,FaChartArea } from 'react-icons/fa';
+import { FaWpforms,FaTable,FaChartArea,FaFileImage } from 'react-icons/fa';
 import { BiGridAlt } from "react-icons/bi";
 import { BsFillPersonFill,BsMessenger } from "react-icons/bs";
 
@@ -119,6 +119,16 @@ function Sidebar() {
                 // icon is optional
 
                 elemBefore: () => <FaChartArea name="chart" />,
+
+              },
+              {
+                title: <NavLink style={{color:"black"}} to="/detc">Detection</NavLink>,
+                itemId: '/detect',
+                
+                // you can use your own custom Icon component as well
+                // icon is optional
+
+                elemBefore: () => <FaFileImage name="det" />,
 
               },
             ]}

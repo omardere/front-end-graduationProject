@@ -14,7 +14,7 @@ function My_header() {
     <header id="header" className="fixed-top header-scrolled">
     <div className="container d-flex align-items-center justify-content-lg-between">
 
-      <h1 className="logo me-auto me-lg-0"><a href="index.html"><span>.</span></a></h1>
+    <h1 className="logo me-auto me-lg-0"><a >SQI<span>.</span></a></h1>
       {/* <!-- Uncomment below if you prefer to use an image logo --> */}
       {/* <!-- <a href="index.html" className="logo me-auto me-lg-0"><img src="assets/img/logo.png" alt="" className="img-fluid"></a>--> */}
 

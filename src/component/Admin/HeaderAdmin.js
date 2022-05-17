@@ -3,10 +3,14 @@ import { NavLink,useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import firebase from './firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import moment from 'react-moment';
+import 'moment-timezone';
 
 function HeaderAdmin  () {
   const [not,setNot]=useState([]);
   const [msg,setMsg]=useState([]);
+  const [not1,setNot1]=useState([]);
+
 
  const ref=firebase.firestore().collection("notification")
  const ref1=firebase.firestore().collection("mesg2")
@@ -42,7 +46,18 @@ setTimeout(function(){
  useEffect(() => {
   getNot();
   getMsg();
-  console.log(not);
+  axios.get(`http://localhost:8080/api/v1/notify/getLastNotify`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    }
+  }).then(
+    (res)=>
+    {
+      console.log(res.data);
+
+      setNot1(res.data)
+   }
+  )
   const msg1=firebase.messaging();
   msg1.requestPermission().then(()=>{
     return msg1.getToken();
@@ -73,7 +88,7 @@ var sr="assets/img/"+ adm.img;
 <div style={{marginLeft:"20px"}} className="d-flex align-items-center justify-content-between">
   <NavLink to="/" className="logo d-flex align-items-center">
     <img src="assets/img/logoADM.png" alt=""/>
-      <span className="d-none d-lg-block">NiceAdmin</span>
+      <span className="d-none d-lg-block">Smart Quality</span>
     </NavLink>
   
 </div>
@@ -94,16 +109,16 @@ var sr="assets/img/"+ adm.img;
 
       <a className="nav-link nav-icon" href="#i" data-bs-toggle="dropdown">
         <i className="bi bi-bell"></i>
-        <span className="badge bg-primary badge-number">{not.length}</span>
+        <span className="badge bg-primary badge-number">{not1.length}</span>
       </a>
       {/* < />!-- End Notification Icon --> */}
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
         <li className="dropdown-header">
-          You have {not.length} new notifications
+          You have {not1.length} new notifications
         </li>
         {
-          not.map(n=>
+          not1.map(n=>
             {
               return(
                 <div>
@@ -114,8 +129,7 @@ var sr="assets/img/"+ adm.img;
         <li className="notification-item">
           <i className="bi bi-exclamation-circle text-warning"></i>
           <div>
-            <h4>{n.user}</h4>
-            <p>{n.content}</p>
+            <h4>{n.value}</h4>
             <p>{n.time}</p>
           </div>
         </li>

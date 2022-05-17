@@ -133,7 +133,7 @@ function NextProduct() {
         </div>
         </div>
     </div>
-    <div>
+    <div >
         <form>
     <input onChange={(e)=>handle(e)} value={data.mid} id="mid" style={{marginLeft:"120px"}} placeholder='choose the id of material' type="text"/>
     <input onChange={(e)=>handle(e)} value={data.pid} id="pid" style={{marginLeft:"50px"}} placeholder='choose the id of product' type="text"/>

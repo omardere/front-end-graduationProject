@@ -36,6 +36,7 @@ import ViewProduct from "./component/Admin/ViewProduct";
 import MaterialProduct from "./component/Admin/MaterialProduct";
 import NextNextProduct from "./component/Admin/NextNextProduct";
 import LineChart from "./component/Admin/LineChart";
+import Detection from "./component/Admin/Detection";
 
 function App ()  {
 
@@ -66,6 +67,7 @@ function App ()  {
           <Route path="/NNP" element={<NextNextProduct/>} />
           <Route path="/VP" element={<ViewProduct/>} />
           <Route path="/MP/:handle" element={<MaterialProduct/>} />
+          <Route path="/detc" element={<Detection/>} />
 
 
         </Routes>
@@ -87,6 +89,7 @@ function App ()  {
       <SidebarEmp/>
         <Routes>
           <Route path="/FE" element={<FormEmployee/>} />
+          <Route path="/chart" element={<LineChart/>} />
           <Route path="/FM" element={<FormMaterial />} />
           <Route path="/FD" element={<FormDepartment />} />
           <Route path="/FP" element={<FormProduct />} />
@@ -103,6 +106,8 @@ function App ()  {
           <Route path="/FSub" element={<FormSublayer/>} />
           <Route path="/NP" element={<NextProduct/>} />
           <Route path="/MP/:handle" element={<MaterialProduct/>} />
+          <Route path="/detc" element={<Detection/>} />
+
         </Routes>
       
       </BrowserRouter> 

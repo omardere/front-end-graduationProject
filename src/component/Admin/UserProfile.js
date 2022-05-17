@@ -24,6 +24,8 @@ function UserProfile() {
      }
     setData(newdata);
     localStorage.setItem("image",e.target.files[0].name)
+    console.log(e.target.files[0].name);
+
     console.log(newdata);
   }
   useEffect(() => {
@@ -54,7 +56,33 @@ function UserProfile() {
   console.log(adm.dep)
   function submit(e){
     e.preventDefault();
-    axios.put(`http://localhost:8080/api/v1/user/update/${localStorage.getItem("username")}/?firstName=${data.fname}&lastName=${data.lname}&email=${data.email}`,null,{
+    var fname;
+    var lname;
+    var email;
+
+
+    if(data.fname==="")
+    {
+      fname=null;
+    }
+    else{
+      fname=data.fname;
+    }
+    if(data.lname==="")
+    {
+      lname=null;
+    }
+    else{
+      lname=data.lname;
+    }
+    if(data.email==="")
+    {
+      email=null;
+    }
+    else{
+      email=data.email;
+    }
+    axios.put(`http://localhost:8080/api/v1/user/update/${localStorage.getItem("username")}/?firstName=${fname}&lastName=${lname}&email=${email}`,null,{
       headers: {
         'Authorization': `Bearer ${localStorage.getItem("token")}` 
       }
@@ -74,7 +102,13 @@ function UserProfile() {
 
         }
       }
-    )
+    ).catch(e=>
+      {
+        if(e.response.status===500)
+        {
+          alert("user name or email are alredy found")
+        }
+      })
     axios.put(`http://localhost:8080/api/v1/employee/updateByUserName/${localStorage.getItem("username")}/?image=${data.img}`,null,{
       headers: {
         'Authorization': `Bearer ${localStorage.getItem("token")}` 

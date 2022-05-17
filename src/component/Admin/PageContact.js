@@ -75,7 +75,7 @@ function PageContact() {
 function ChatRoom() {
   const dummy = useRef();
   const messagesRef = firestore.collection('mesg2');
-  const query = messagesRef.orderBy('createdAt').limit(50);
+  const query = messagesRef.orderBy('createdAt').limit(100);
   const [messages] = useCollectionData(query, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
 

@@ -149,7 +149,7 @@ function Cart() {
     <div className="col-lg-8 offset-lg-2 text-center">
       <div className="breadcrumb-text">
         <p>Product</p>
-        <h1>Cart</h1>
+        <h1>Card</h1>
       </div>
     </div>
   </div>
@@ -193,9 +193,9 @@ function Cart() {
                     <tr className="table-body-row">
               <td className="product-image"><img src={sr} alt=""/></td>
               <td className="product-name">{c.wareHouse.department.name}</td>
-              <td className="product-price">${c.price}</td>
+              <td className="product-price">${parseInt(c.price)}</td>
               <td className="product-quantity"><input onChange={(e)=>handl(e,c.id)} value={count.count[c.id]} min="1" max={c.quantity}    id="count" type="number" placeholder="0"/></td>
-              <td className="product-total">{p*co}</td>
+              <td className="product-total">{parseInt(p*co)}</td>
               <td>
                <button onClick={(e)=>dlt(e,c.id)} style={{color: "#E34724",cursor:"pointer",display:"inline-block",margin:"0 5px" ,height:"30px"}} class="fa fa-trash" title="Delete" data-toggle="tooltip"></button>
             </td>
@@ -222,7 +222,7 @@ function Cart() {
          
             <tr className="total-data">
               <td><strong>Total: </strong></td>
-              <td>${total}</td>
+              <td>${parseInt(total)}</td>
             </tr>
           </tbody>
         </table>

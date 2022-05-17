@@ -89,7 +89,7 @@ function NextNextProduct() {
         </div>
         </div>
     <div>
-        <form>
+        <form >
     <input onChange={(e)=>handle(e)} value={data.mid} id="mid" style={{marginLeft:"120px"}} placeholder='  id of product' type="text"/>
     <input onChange={(e)=>handle(e)} value={data.pid} id="pid" style={{marginLeft:"50px"}} placeholder=' id of enrooled product' type="text"/>
     <input onChange={(e)=>handle(e)} value={data.count} id="count" style={{marginLeft:"50px"}} placeholder=' count of material' type="text"/>

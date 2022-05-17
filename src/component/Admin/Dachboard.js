@@ -13,7 +13,7 @@ function Dachboard () {
     fin:[],     
   })
   useEffect(() => {
-  axios.get(`http://localhost:8080/api/v1/order/OrdersInProgress`,{
+  axios.get(`http://localhost:8080/api/v1/order/getLast`,{
     headers: {
       'Authorization': `Bearer ${localStorage.getItem("token")}`, 
     }
@@ -23,6 +23,7 @@ function Dachboard () {
           setOrder({
             order:res.data
           })
+          
         }
         )
 
@@ -44,6 +45,7 @@ function Dachboard () {
   //  var JSONObject = JSON.parse(order.order);
     //console.log(JSONObject);   
   console.log(typeof(order.order))
+  console.log(fin.fin)
   return (
     <div>
   <main   id="main" className="main">
@@ -106,8 +108,8 @@ function Dachboard () {
                       <i className="bi bi-currency-dollar"></i>
                     </div>
                     <div className="ps-3">
-                      <h6>${fin.fin.profitsOfTheMonth}</h6>
-                      <span className="text-success small pt-1 fw-bold">{fin.fin.profitsToLastMonth}%</span> 
+                      <h6>${parseInt(fin.fin.profitsOfTheMonth,10)}</h6>
+                      <span className="text-success small pt-1 fw-bold">{parseInt(fin.fin.profitsToLastMonth,10)}%</span> 
 
                     </div>
                   </div>
@@ -130,7 +132,7 @@ function Dachboard () {
                     </div>
                     <div className="ps-3">
                       <h6>{fin.fin.customerCount}</h6>
-                      <span className="text-danger small pt-1 fw-bold">{fin.fin.customerToLastMonth}%</span> 
+                      <span className="text-danger small pt-1 fw-bold">{parseInt(fin.fin.customerToLastMonth,10)}%</span> 
 
                     </div>
                   </div>

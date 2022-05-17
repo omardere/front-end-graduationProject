@@ -68,9 +68,9 @@ function Team() {
           </div>
 
           <div className="col-lg-3 col-md-6 d-flex align-items-stretch">
-            <div className="member" data-aos="fade-up" data-aos-delay="400">
-              <div className="member-img">
-                <img src="assets/img/team/team-4.jpg" className="img-fluid" alt=""/>
+            <div style={{width:"100%"}} className="member" data-aos="fade-up" data-aos-delay="400">
+              <div   className="member-img">
+                <img style={{width:"100%",height:"260px"}} src="assets/img/team/team-4.jpg" className="img-fluid" alt=""/>
                 <div className="social">
                   <a href="#!"><i className="bi bi-twitter"></i></a>
                   <a href="https://www.facebook.com/profile.php?id=100012984550496"><i className="bi bi-facebook"></i></a>

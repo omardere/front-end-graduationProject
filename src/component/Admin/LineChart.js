@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,9 +9,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  BarElement,
 } from 'chart.js';
 
 import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
+
 
 ChartJS.register(
   CategoryScale,
@@ -19,12 +23,15 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
+  BarElement,
   Legend
 );
 
 
 const LineChart = () => {
-  const [chart, setChart] = useState({})
+  const [chart, setChart] = useState([])
+  const [chart1, setChart1] = useState([])
+
   var baseUrl = "https://api.coinranking.com/v2/coins/?limit=10";
   var proxyUrl = "https://cors-anywhere.herokuapp.com/";
   var apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
@@ -32,35 +39,41 @@ const LineChart = () => {
 
 
   useEffect(() => {
-    // const fetchCoins = async () => {
-    //   await fetch(`${proxyUrl}${baseUrl}`, {
-    //     method: 'GET',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'x-access-token': `${apiKey}`,
-    //       'Access-Control-Allow-Origin': "*"
-    //     }
-    //   })
-    //     .then((response) => {
-    //       if (response.ok) {
-    //         response.json().then((json) => {
-    //           console.log(json.data);
-    //           setChart(json.data)
-    //         });
-    //       }
-    //     }).catch((error) => {
-    //       console.log(error);
-    //     });
-    // };
-    // fetchCoins()
-  }, [baseUrl, proxyUrl, apiKey])
+    axios.get(`http://localhost:8080/api/v1/update/getUpdate`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`, 
+    }
+  }).then(res=>
+    {
+      console.log(res.status)
+      if(res.status===200)
+      {
+        console.log(res.data)
+        setChart(res.data)
+      }
+    })
+    axios.get(`http://localhost:8080/api/v1/financial/getReport`,{
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`, 
+    }
+  }).then(res=>
+    {
+      console.log(res.status)
+      if(res.status===200)
+      {
+        console.log(res.data)
+        setChart1(res.data)
+      }
+    })
+   
+  }, [])
 
   console.log("chart", chart);
   var data = {
-    labels: /*chart?.coins?.map(x => x.name)*/['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: chart&&chart.map(x => x.updateDate),
     datasets: [{
-      label: ` Coins Available`,
-      data: /*chart?.coins?.map(x => x.price),*/[12, 19, 3, 5, 2, 3],
+      label: ` number of product`,
+      data: chart&&chart.map(x => x.numOfProducts),
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -81,7 +94,32 @@ const LineChart = () => {
       borderWidth: 1
     }]
   };
-
+  const data1 = {
+    labels: chart1&&chart1.map(x => x.month),
+    datasets: [{
+      label: 'profit per month ',
+      data: chart1&&chart1.map(x => x.profitsOfTheMonth),
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 205, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(201, 203, 207, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)',
+        'rgb(255, 159, 64)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(54, 162, 235)',
+        'rgb(153, 102, 255)',
+        'rgb(201, 203, 207)'
+      ],
+      borderWidth: 1
+    }]
+  };
   var options = {
     maintainAspectRatio: false,
     scales: {
@@ -94,13 +132,19 @@ const LineChart = () => {
   }
 
   return (
-    <main style={{  marginTop: "50px  ",height:"1000px",backgroundColor:"white"}}  id="main" className="main">
+    <main style={{marginTop: "50px ",height:"1000px",backgroundColor:"white"}}  id="main" className="main">
     <div style={{marginTop:"50px",color:"black"}} >
       <Line
         data={data}
         height={400}
         options={options}
-
+      />
+    </div>
+    <div style={{marginTop:"50px",color:"black"}} >
+      <Bar
+        data={data1}
+        height={400}
+        options={options}
       />
     </div>
     </main>
